@@ -158,9 +158,9 @@ fi
 
 echo "---------------------------------------------" | tee -a $log
 
-cd ${WORKDIR}/spark-perf/result &>//dev/null
+cd ${WORKDIR}/spark-perf/results &>//dev/null
 current_time=$(date +"%Y.%m.%d.%S")
-zip ${PERFUTILS_DIR}/spark_perf_results/spark_perf_output_$current_time.zip ./* &>>/dev/null
+zip -r ${PERFUTILS_DIR}/spark_perf_results/spark_perf_output_$current_time.zip ./* &>>/dev/null
 
 echo 'Copying results to '${PERFUTILS_DIR}'/spark_perf_results/spark_perf_output_'$current_time'.zip' | tee -a $log
 echo 'You can check results at location '${PERFUTILS_DIR}'/spark_perf_results and logs at location '${PERFUTILS_DIR}'/spark_perf_logs' | tee -a $log
