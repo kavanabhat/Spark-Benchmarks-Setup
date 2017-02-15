@@ -54,5 +54,9 @@ sed -i  "3s/.*/master=$MASTER/" conf/env.sh
 export MC_ESC=$(echo $MC | sed 's/ /\\ /g')
 sed -i  "5s/.*/MC_LIST=$MC_ESC/" conf/env.sh
 
-echo "Spark Bench has been successfully set up \n
-Check the documentation at /Spark-Benchmarks-Setup/spark-bench-auto/README.md on how to run each of the benchmarks"
+
+echo " *******************************************************
+Spark Bench has been successfully set up 
+Check the documentation at /Spark-Benchmarks-Setup/spark-bench-auto/README.md on how to run each of the benchmarks
+*******************************************************"
+
