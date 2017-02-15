@@ -102,10 +102,10 @@ sed -i 's|PROMPT_FOR_DELETES = True|PROMPT_FOR_DELETES = False|g' ${PERFWORK_DIR
 ##Running the spark-perf
 
 cd ${PERFWORK_DIR}/spark-perf
-#rm -rf ${PERFWORK_DIR}/spark-perf/results/* &>//dev/null 
+rm -rf ${PERFWORK_DIR}/spark-perf/results/* &>//dev/null 
 
 echo "Running the spark-perf benchmark" | tee -a $log
-#${PERFWORK_DIR}/spark-perf/bin/run | tee -a $log
+${PERFWORK_DIR}/spark-perf/bin/run | tee -a $log
 
 if [ ! -d ${PERFWORK_DIR}/spark_perf_results ]
 then
