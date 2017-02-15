@@ -1,6 +1,6 @@
 function check_package(){
-    echo $1
-    dpkg -s $1
+    echo "Checking if $1 is installed"
+    dpkg -s $1 > /dev/null
     if [ $? -eq 0 ]; then
 		echo "$1 already installed"
 	else
