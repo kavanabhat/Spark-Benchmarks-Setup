@@ -1,15 +1,26 @@
 #!/bin/bash -l
-
-PERFUTILS_DIR=`pwd`            
-
-current_time=$(date +"%Y.%m.%d.%S")
-
-if [ ! -d ${PERFUTILS_DIR}/spark_perf_logs ];
-then
-    mkdir ${PERFUTILS_DIR}/spark_perf_logs
+   
+if [ -z ${WORKDIR} ]; then
+   echo "Please set your work directory environment variable - "WORKDIR"."
+   exit 1
 fi
 
-log=${PERFUTILS_DIR}/spark_perf_logs/spark_perf_install_$current_time.log
+PERFUTILS_DIR=$WORKDIR/Spark-Benchmarks-Setup/spark-perf-setup  
+current_time=$(date +"%Y.%m.%d.%S")
+
+if [ ! -d ${PERFUTILS_DIR}/wdir ];
+then
+    mkdir ${PERFUTILS_DIR}/wdir
+fi
+
+PERFWORK_DIR=$WORKDIR/Spark-Benchmarks-Setup/spark-perf-setup/wdir
+
+if [ ! -d ${PERFWORK_DIR}/spark_perf_logs ];
+then
+    mkdir ${PERFWORK_DIR}/spark_perf_logs
+fi
+
+log=${PERFWORK_DIR}/spark_perf_logs/spark_perf_install_$current_time.log
 
 echo -e | tee -a $log
 
@@ -57,8 +68,6 @@ else
     SERVERS=`echo ''$MASTER','$SLAVES''`
 fi
 		
-cd ${PERFUTILS_DIR}
-	
 ##hadoop check
 for i in `echo $SERVERS |cut -d "=" -f2 | tr "," "\n" | cut -d "," -f1`
 do
@@ -91,17 +100,19 @@ echo "---------------------------------------------" | tee -a $log
 	
 ##SPARK perf setup steps
 
-if [ -d ${PERFUTILS_DIR}/spark-perf ];
+if [ -d ${PERFWORK_DIR}/spark-perf ];
 then
-    echo -e 'Removing existing spark-perf folder - '${PERFUTILS_DIR}'/spark-perf \n' | tee -a $log
-	rm -rf ${PERFUTILS_DIR}/spark-perf &>/dev/null
+    echo -e 'Removing existing spark-perf folder - '${PERFWORK_DIR}'/spark-perf \n' | tee -a $log
+	rm -rf ${PERFWORK_DIR}/spark-perf &>/dev/null
 fi
+
+cd ${PERFWORK_DIR}
 	
 if curl --output /dev/null --silent --head --fail ${SPARK_PERF_GIT_URL}
 then
 	 git clone ${SPARK_PERF_GIT_URL} | tee -a $log
 	 echo -e 
-	 echo -e 'spark-perf cloning done at - '${PERFUTILS_DIR}'/spark-perf' | tee -a $log
+	 echo -e 'spark-perf cloning done at - '${PERFWORK_DIR}'/spark-perf' | tee -a $log
 else
      echo -e
 	 echo 'This URL - '${SPARK_PERF_GIT_URL}' does not exist. Please check url for Spark perf git repository.' | tee -a $log
@@ -114,19 +125,29 @@ echo "---------------------------------------------" | tee -a $log
 ##Config.py changes 
 
 echo "Configuring changes in config.py file" | tee -a $log
-cp ${PERFUTILS_DIR}/spark-perf/config/config.py.template ${PERFUTILS_DIR}/spark-perf/config/config.py 
+cp ${PERFWORK_DIR}/spark-perf/config/config.py.template ${PERFWORK_DIR}/spark-perf/config/config.py 
 
 ##Set hadoop related variables
-sed -i 's|^DEFAULT_HOME.*|DEFAULT_HOME="'${SPARK_HOME}'"|g' ${PERFUTILS_DIR}/spark-perf/config/config.py 
-sed -i 's|^HDFS_URL.*|HDFS_URL = "hdfs://'${MASTER}':9000/test/"|g' ${PERFUTILS_DIR}/spark-perf/config/config.py
+sed -i 's|^DEFAULT_HOME.*|DEFAULT_HOME="'${SPARK_HOME}'"|g' ${PERFWORK_DIR}/spark-perf/config/config.py 
+sed -i 's|^HDFS_URL.*|HDFS_URL = "hdfs://'${MASTER}':9000/test/"|g' ${PERFWORK_DIR}/spark-perf/config/config.py
 
 #Set spark related variables
-sed -i 's|SPARK_HOME_DIR = "/root/spark"|SPARK_HOME_DIR = "'${SPARK_HOME}'"|g' ${PERFUTILS_DIR}/spark-perf/config/config.py &>>/dev/null
-sed -i 's|^SPARK_CLUSTER_URL.*|SPARK_CLUSTER_URL = "yarn"|g' ${PERFUTILS_DIR}/spark-perf/config/config.py 
-sed -i 's|^RESTART_SPARK_CLUSTER.*|RESTART_SPARK_CLUSTER = "False"|g' ${PERFUTILS_DIR}/spark-perf/config/config.py 
-sed -i 's|^RSYNC_SPARK_HOME.*|RSYNC_SPARK_HOME = "False"|g' ${PERFUTILS_DIR}/spark-perf/config/config.py 
+sed -i 's|SPARK_HOME_DIR = "/root/spark"|SPARK_HOME_DIR = "'${SPARK_HOME}'"|g' ${PERFWORK_DIR}/spark-perf/config/config.py &>>/dev/null
+sed -i 's|^SPARK_CLUSTER_URL.*|SPARK_CLUSTER_URL = "yarn"|g' ${PERFWORK_DIR}/spark-perf/config/config.py 
+sed -i 's|RESTART_SPARK_CLUSTER = True|RESTART_SPARK_CLUSTER = False|g' ${PERFWORK_DIR}/spark-perf/config/config.py 
+sed -i 's|^RSYNC_SPARK_HOME.*|RSYNC_SPARK_HOME = False|g' ${PERFWORK_DIR}/spark-perf/config/config.py 
 		
 echo "---------------------------------------------" | tee -a $log	
 
-echo 'Please check and if needed, you can edit options like "COMMON_JAVA_OPTS","SPARK_DRIVER_MEMORY","SPARK_KEY_VAL_TEST_OPTS" and other test specific options in file '${PERFUTILS_DIR}'/spark-perf/config/config.py'
+
+##Setting PREP flag = True for all tests
+echo "Setting PREP flag = True for all tests in config.py file" | tee -a $log
+
+sed -i 's|^PREP_SPARK_TESTS.*|PREP_SPARK_TESTS = True|g' ${PERFWORK_DIR}/spark-perf/config/config.py 
+sed -i 's|^PREP_PYSPARK_TESTS.*|PREP_PYSPARK_TESTS = True|g' ${PERFWORK_DIR}/spark-perf/config/config.py 
+sed -i 's|^PREP_STREAMING_TESTS.*|PREP_STREAMING_TESTS = True|g' ${PERFWORK_DIR}/spark-perf/config/config.py 
+sed -i 's|^PREP_MLLIB_TESTS.*|PREP_MLLIB_TESTS = True|g' ${PERFWORK_DIR}/spark-perf/config/config.py 
+
+echo -e
+echo 'Please check and if needed, you can edit options like "COMMON_JAVA_OPTS","SPARK_DRIVER_MEMORY","SPARK_KEY_VAL_TEST_OPTS" and other test specific options in file '${PERFWORK_DIR}'/spark-perf/config/config.py'
 echo -e
