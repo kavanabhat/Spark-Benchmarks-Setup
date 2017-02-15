@@ -82,10 +82,11 @@ then
     echo "Please enter the value [e.g. - 0.001/0.1/0.25/0.5/0.75]"
     read scale
 	SCALE_FACTOR=${scale}
+	sed -i 's|^SCALE_FACTOR.*|SCALE_FACTOR = '${SCALE_FACTOR}'|g' ${PERFWORK_DIR}/spark-perf/config/config.py
 	 
 	echo -e 'Setting SCALE_FACTOR='${scale}' in config.py \n'	| tee -a $log
 else 
-    echo -e 'Keeping defaul SCALE_FACTOR=${SCALE_FACTOR} in config.py \n' | tee -a $log
+    echo -e 'Keeping default value '${SCALE_FACTOR}' in config.py \n' | tee -a $log
 fi
 
 ##Config.py changes
@@ -98,15 +99,13 @@ sed -i 's|RUN_PYTHON_MLLIB_TESTS.*|RUN_PYTHON_MLLIB_TESTS = '${RUN_PYTHON_MLLIB_
 
 ##setting PROMPT_FOR_DELETES to false
 sed -i 's|PROMPT_FOR_DELETES = True|PROMPT_FOR_DELETES = False|g' ${PERFWORK_DIR}/spark-perf/config/config.py 
-
-sed -i 's|^SCALE_FACTOR.*|SCALE_FACTOR = '${SCALE_FACTOR}'|g' ${PERFWORK_DIR}/spark-perf/config/config.py
 ##Running the spark-perf
 
 cd ${PERFWORK_DIR}/spark-perf
-rm -rf ${PERFWORK_DIR}/spark-perf/results/* &>//dev/null 
+#rm -rf ${PERFWORK_DIR}/spark-perf/results/* &>//dev/null 
 
 echo "Running the spark-perf benchmark" | tee -a $log
-${PERFWORK_DIR}/spark-perf/bin/run | tee -a $log
+#${PERFWORK_DIR}/spark-perf/bin/run | tee -a $log
 
 if [ ! -d ${PERFWORK_DIR}/spark_perf_results ]
 then
