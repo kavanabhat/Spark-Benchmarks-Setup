@@ -2,19 +2,28 @@
 
 - Contents:
 
-  1. Overview
-  2. How to Run the script
-  3. KMeans
-  4. Terasort
-  5. SQL
+  1. Pre-requisites
+  2. Overview
+  3. How to Run the script
+  4. KMeans
+  5. Terasort
+  6. SQL
 
 ---
+
+### Pre-requisites:
+1. Zip is installed on master machine 
+2. Python is installed on master machine
+3. Hadoop and spark setup is already completed using scripts at https://github.com/kmadhugit/hadoop-cluster-utils.git  and it is running on master & slave machines.
+4. If you want to run spark workloads on hive, then hive needs to be installed and configured.
+
+
 ### Overview ###
 
 The code is for easing the steps for installing spark bench. Currently this installs the spark bench from branch 2.0.1 of repo at https://github.com/MaheshIBM/spark-bench 
 
 ### How to run the script ###
-Clone the file and run ./install.sh. The code is tested to run on ubuntu 16.
+Clone the repo and run ./install.sh at Spark-Benchmarks-Setup/spark-bench-auto. The code is tested to run on ubuntu 16.04.1 LTS.
 
 ### Overall configuration ###
 The overall configuration about the cluster is kept at spark-bench/conf/env.sh.
@@ -30,26 +39,22 @@ The configuration file is stored at spark-bench/[Workload]/conf/env.sh. For exam
 
 ### KMeans ###
 To execute the workload for KMeans, generate data followed by run. The configuration of the workload is at Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/KMeans/conf/env.sh.
-You can edit the file to change the amount of data that gets generated. The data generated is stored in hdfs.
-The script to generate the data is Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/KMeans/bin/gen_data.sh
-
-You run the workload with the script Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/KMeans/bin/run.sh
+- You can edit the file to change the amount of data that gets generated. The data generated is stored in hdfs.
+- The script to generate the data is Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/KMeans/bin/gen_data.sh
+- You run the workload with the script Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/KMeans/bin/run.sh
 
 ### Terasort ###
 
 To execute the workload for Terasort, generate data followed by run. The configuration of the workload is at Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/Terasort/conf/env.sh.
-You can edit the file to change the amount of data that gets generated. The data generated is stored in hdfs.
-The script to generate the data is Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/Terasort/bin/gen_data.sh
-
-You run the workload with the script Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/Terasort/bin/run.sh
+- You can edit the file to change the amount of data that gets generated. The data generated is stored in hdfs.
+- The script to generate the data is Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/Terasort/bin/gen_data.sh
+- You can run the workload with the script Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/Terasort/bin/run.sh
 
 ### SQL ###
-The SQL benchmark by default uses SparkSQL. If you want to use Hive then pass argument hive to the run script.
-
+**The SQL benchmark by default uses SparkSQL. If you want to use Hive then pass argument hive to the run script.
 
 To execute the workload for SQL, generate data followed by run. The configuration of the workload is at Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/SQL/conf/env.sh.
-You can edit the file to change the amount of data that gets generated. The data generated is stored in hdfs.
-The script to generate the data is Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/SQL/bin/gen_data.sh
-
-You run the workload with the script Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/SQL/bin/run.sh
-To run the workload using hive use Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/SQL/bin/run.sh hive
+- You can edit the file to change the amount of data that gets generated. The data generated is stored in hdfs.
+- The script to generate the data is Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/SQL/bin/gen_data.sh
+- You can run the workload with the script Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/SQL/bin/run.sh
+- To run the workload using hive use Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/SQL/bin/run.sh hive
