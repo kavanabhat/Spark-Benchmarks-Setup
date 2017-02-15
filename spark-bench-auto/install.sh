@@ -1,6 +1,9 @@
 #!/bin/bash
 
-source functions.sh
+BASEDIR=$(dirname "$0")
+#echo "$BASEDIR"
+
+source $BASEDIR/functions.sh
 
 
 packages="git maven git-extras"
@@ -13,30 +16,23 @@ export SLAVES=`cat $HADOOP_HOME/etc/hadoop/slaves`
 
 
 
-#SPARK_BENCH_INSTALL_DIR="/home/hdp_test/test_install"
+WORK_DIR=$BASEDIR/wdir
 
-#if [ -z $SPARK_BENCH_INSTALL_DIR ]; then
-#    echo "Spark bench home not set, setting to /home/`whoami`"
-#    SPARK_BENCH_INSTALL_DIR="/home/`whoami`"
-#else
-#    echo "Spark bench home set to $SPARK_BENCH_INSTALL_DIR"
-#fi
+mkdir -p $WORK_DIR
 
-#echo $SPARK_BENCH_INSTALL_DIR
-#mkdir -p $SPARK_BENCH_INSTALL_DIR
-#cd $SPARK_BENCH_INSTALL_DIR
+git-ignore $WORK_DIR
 
+cd $WORK_DIR
+echo "Cloning necessary dependencies to $WORK_DIR"
 
 git clone https://github.com/synhershko/wikixmlj.git
 cd wikixmlj
 mvn package install
 
-gitignore wikixmlj
 
 cd ..
 git clone https://github.com/MaheshIBM/spark-bench -b spark2.0.1
 
-gitingore spark-bench
 
 cd spark-bench
 ./bin/build-all.sh
@@ -58,3 +54,5 @@ sed -i  "3s/.*/master=$MASTER/" conf/env.sh
 export MC_ESC=$(echo $MC | sed 's/ /\\ /g')
 sed -i  "5s/.*/MC_LIST=$MC_ESC/" conf/env.sh
 
+echo "Spark Bench has been successfully set up \n
+Check the documentation at /Spark-Benchmarks-Setup/spark-bench-auto/README.md on how to run each of the benchmarks"
