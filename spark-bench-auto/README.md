@@ -37,6 +37,8 @@ This includes such things as, go through the file to see a complete list of all 
 In addition to the overall configuration, every work load has its own configuration.
 The configuration file is stored at spark-bench/[Workload]/conf/env.sh. For example, for the Terasort workload, the configuration file is located at *spark-bench/Terasort/conf/env.sh*. This will contain configuration that decides the amount of data to be generated and other config specific to the workload.
 
+**Output logs are located at /Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/num**
+
 ### KMeans ###
 To execute the workload for KMeans, generate data followed by run. The configuration of the workload is at Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/KMeans/conf/env.sh.
 - You can edit the file *Spark-Benchmarks-Setup/spark-bench-auto/wdir/spark-bench/KMeans/conf/env.sh* to change the amount of data that gets generated. The data generated is stored in hdfs.
