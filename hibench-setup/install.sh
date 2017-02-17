@@ -1,7 +1,7 @@
 #!/bin/bash -l
 echo -e
 if [ -z ${WORKDIR} ]; then
-   echo "Please set your work directory environment variable - "WORKDIR"."
+   echo "Please set your work directory environment variable - "WORKDIR"." | tee -a $log
    exit 1
 fi
 
@@ -22,7 +22,7 @@ fi
 
 log=${HIBENCH_WORK_DIR}/hibench_logs/hibench_install_$current_time.log
 
-echo -e 'Node server details for existing hadoop and spark setup' 
+echo -e 'Node server details for existing hadoop and spark setup' | tee -a $log
 MASTER=`hostname`
 echo -e 'MASTER='$MASTER'' | tee -a $log
 
@@ -123,21 +123,24 @@ else
 fi 
 	
 echo "---------------------------------------------" | tee -a $log
+
+##Hadoop config updates
 	
 cp ${HIBENCH_WORK_DIR}/HiBench/conf/hadoop.conf.template ${HIBENCH_WORK_DIR}/HiBench/conf/hadoop.conf
 
 sed -i 's|^hibench.hadoop.home.*|hibench.hadoop.home    '${HADOOP_HOME}'|g' ${HIBENCH_WORK_DIR}/HiBench/conf/hadoop.conf
 sed -i 's|^hibench.hdfs.master.*|hibench.hdfs.master       hdfs://'${MASTER}':9000 |g' ${HIBENCH_WORK_DIR}/HiBench/conf/hadoop.conf
 
-
+##spark config updates
 cp ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf.template ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
 
 sed -i 's|^hibench.spark.home.*|hibench.spark.home    '${SPARK_HOME}'|g' ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
 	
 cd ${HIBENCH_WORK_DIR}/HiBench
 
-echo -e "Building Hibench"
+echo -e "Building HiBench"
 
 ${HIBENCH_WORK_DIR}/HiBench/bin/build-all.sh | tee -a $log
 echo -e
-echo -e 'Please edit memory and executor related parameter as per your requirement in '{HIBENCH_WORK_DIR}'/HiBench/conf/spark.conf file'
+echo -e 'Please edit memory and executor related parameter as per your requirement in '${HIBENCH_WORK_DIR}'/HiBench/conf/spark.conf file'
+echo -e

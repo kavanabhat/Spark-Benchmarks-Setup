@@ -1,7 +1,7 @@
 #!/bin/bash -l
 echo -e
 if [ -z ${WORKDIR} ]; then
-   echo "Please set your work directory environment variable - "WORKDIR"."
+   echo "Please set your work directory environment variable - "WORKDIR"." | tee -a $log
    exit 1
 fi
 
@@ -20,7 +20,7 @@ then
     mkdir ${HIBENCH_WORK_DIR}/hibench_logs
 fi
 
-log=${HIBENCH_WORK_DIR}/hibench_logs/hibench_runbech_$current_time.log
+log=${HIBENCH_WORK_DIR}/hibench_logs/hibench_runbench_$current_time.log
 
 rm -rf ${HIBENCH_WORK_DIR}/HiBench/report/* &>>/dev/null
 
@@ -34,23 +34,30 @@ workload=`echo ${workload} | tr '[:upper:]' '[:lower:]'`
 if [ $workload = 'all' ]
 then
 	workload="graph,micro,ml,sql,websearch"
+else
+    echo $workload | grep -i 'all' &>>/dev/null
+	if [ $? -eq 0 ]
+	then
+		echo 'Please enter option in correct format, '$workload' is not valid option' | tee -a $log
+		exit 1
+	else
+		##check for validation of entered workload option 
+		for i in `echo ${workload} | tr "," " "`
+		do
+			echo $i | grep -iE 'graph|micro|ml|sql|websearch' &>>/dev/null
+			if [ $? -ne 0 ]
+			then
+				echo 'Please select correct workload to run '$i' is not valid option' | tee -a $log
+				exit 1
+			fi
+		done
+	fi
 fi
 
-##check for validati of workload option enetered
-for i in `echo ${workload} | tr "," " "`
-do
-	echo $i | grep -iE 'graph|micro|ml|sql|websearch' &>>/dev/null
-	if [ $? -ne 0 ]
-	then
-		echo 'Please select correct workload to run '$i' is not valid option' | tee -a $log
-		exit 1
-	fi
-done
-
+echo 'selected workloads for run - '$workload'' | tee -a $log
 
 for i in `echo ${workload} | tr "," " "`
 do 
-
 	if [ ${i} = "graph" ]
 	then 
 
@@ -117,9 +124,7 @@ do
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/scan/prepare/prepare.sh | tee -a $log
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/scan/spark/run.sh | tee -a $log
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/scan/hadoop/run.sh | tee -a $log
-	 
-	
-	fi
+	fi 
 done
  
 if [ ! -d ${HIBENCH_WORK_DIR}/hibench_results ]
