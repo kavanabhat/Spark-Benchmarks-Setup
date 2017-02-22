@@ -24,6 +24,7 @@ The code is for easing the steps for installing spark bench. Currently this inst
 
 ### How to run the script ###
 Clone the repo and run ./install.sh at Spark-Benchmarks-Setup/spark-bench-setup. The code is tested to run on ubuntu 16.04.1 LTS.
+After installation to run a workload use run_bench.sh for example to run Terasort the command is *./run_bench.sh Terasort*
 
 ### Overall configuration ###
 The overall configuration about the cluster is kept at spark-bench/conf/env.sh.
@@ -37,7 +38,7 @@ This includes such things as, go through the file to see a complete list of all 
 In addition to the overall configuration, every work load has its own configuration.
 The configuration file is stored at spark-bench/[Workload]/conf/env.sh. For example, for the Terasort workload, the configuration file is located at *spark-bench/Terasort/conf/env.sh*. This will contain configuration that decides the amount of data to be generated and other config specific to the workload.
 
-**Output logs are located at /Spark-Benchmarks-Setup/spark-bench-setup/wdir/spark-bench/num**
+**Output logs are located at /Spark-Benchmarks-Setup/spark-bench-setup/wdir/logs**
 
 ### KMeans ###
 To execute the workload for KMeans, generate data followed by run. The configuration of the workload is at Spark-Benchmarks-Setup/spark-bench-setup/wdir/spark-bench/KMeans/conf/env.sh.
