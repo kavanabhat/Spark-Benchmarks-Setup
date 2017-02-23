@@ -104,10 +104,17 @@ sed -i  "3s/.*/master=$MASTER/" conf/env.sh
 
 #replace line 5 with MC_LIST="$SLAVES"
 #need to escape spaces for sed to work
-export MC_ESC=$(echo $SLAVES | sed 's/ /\\ /g')
+MC="\"`cat $HADOOP_HOME/etc/hadoop/slaves`\""
+echo $MC
+export MC_ESC=$(echo $MC | sed 's/ /\\ /g')
+echo $MS_ESC
 sed -i  "5s/.*/MC_LIST=$MC_ESC/" conf/env.sh
 
-
+echo "---------------------------------------------" | tee -a $log
+echo "Setting the default run mode to yarn cluster"  | tee -a $log
+echo "---------------------------------------------" | tee -a $log
+line_number=$(grep -n ^YARN_DEPLOY_MODE= conf/env.sh | awk -F':' '{ print $1 }')
+sed -i "$( echo $line_number)s/.*/YARN_DEPLOY_MODE=cluster/" conf/env.sh
 
 echo " *******************************************************
 Spark Bench has been successfully set up. 
