@@ -24,7 +24,8 @@ The code is for easing the steps for installing spark bench. Currently this inst
 
 ### How to run the script ###
 Clone the repo and run ./install.sh at Spark-Benchmarks-Setup/spark-bench-setup. The code is tested to run on ubuntu 16.04.1 LTS.
-After installation to run a workload use run_bench.sh for example to run Terasort the command is *./run_bench.sh Terasort*
+After installation to run a workload use run_bench.sh for example to run Terasort the command is *./run_bench.sh -cr Terasort*
+Use -c flag to create data, -r to only run and -cr if you want to create and run.
 
 ### Overall configuration ###
 The overall configuration about the cluster is kept at spark-bench/conf/env.sh.
@@ -34,7 +35,7 @@ This includes such things as, go through the file to see a complete list of all 
 - Version of spark used
 - URL for the master - this can be yarn, spark or spark standalone (local[x])
 
-### Below is a description of each of workloads that has been tested. ###
+### Below is a description of some of the workloads, same rules and folder structure apply to all workloads ###
 In addition to the overall configuration, every work load has its own configuration.
 The configuration file is stored at spark-bench/[Workload]/conf/env.sh. For example, for the Terasort workload, the configuration file is located at *spark-bench/Terasort/conf/env.sh*. This will contain configuration that decides the amount of data to be generated and other config specific to the workload.
 
@@ -57,7 +58,25 @@ To execute the workload for Terasort, generate data followed by run. The configu
 **The SQL benchmark by default uses SparkSQL. If you want to use Hive then pass argument hive to the run script. The gen data script for this does not support generating data of different sizes. It merely copies a local directory *(Spark-Benchmarks-Setup/spark-bench-setup/wdir/spark-bench/SQL/src/resources/sample_data_set)* to HDFS**
 
 To execute the workload for SQL, generate data followed by run. The configuration of the workload is at Spark-Benchmarks-Setup/spark-bench-setup/wdir/spark-bench/SQL/conf/env.sh.
-- You can edit the file *Spark-Benchmarks-Setup/spark-bench-setup/wdir/spark-bench/SQL/conf/env.sh* to change the amount of data that gets generated. The data generated is stored in hdfs.
 - The script to generate the data is *Spark-Benchmarks-Setup/spark-bench-setup/wdir/spark-bench/SQL/bin/gen_data.sh*
 - You can run the workload with the script *Spark-Benchmarks-Setup/spark-bench-setup/wdir/spark-bench/SQL/bin/run.sh*
 - To run the workload using hive use *Spark-Benchmarks-Setup/spark-bench-setup/wdir/spark-bench/SQL/bin/run.sh hive*
+
+**Following is a list of all workloads that have been tested**
+ - ConnectedComponent
+ - DecisionTree
+ - KMeans
+ - LabelPropagation
+ - LinearRegression
+ - LogisticRegression
+ - MatrixFactorization
+ - PageRank
+ - PCA
+ - PregelOperation
+ - ShortestPaths
+ - SQL
+ - StronglyConnectedComponent
+ - SVDPlusPlus
+ - SVM
+ - Terasort
+ - TriangleCount
