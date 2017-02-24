@@ -5,8 +5,11 @@
 
 function check_package(){
     #apt get is idempotent
-    #so no need of if condition
-    log=$2
-    echo "sudo apt install $1" |tee -a $log
-    sudo apt install $1 |tee -a $log
+   log=$2
+   #so no need of if condition
+    if [ -f /usr/bin/apt-get ]; then
+	sudo apt-get -y install $1 | tee -a $log
+    else
+	sudo yum -y install $1 | tee -a $log
+    fi
 }
