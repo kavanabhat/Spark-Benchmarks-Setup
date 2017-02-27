@@ -16,14 +16,16 @@
 2. Python is installed on master machine
 3. Hadoop and spark setup is already completed using scripts at https://github.com/kmadhugit/hadoop-cluster-utils.git  and it is running on master & slave machines.
 4. If you want to run spark workloads on hive, then hive needs to be installed and configured.
-
+5. The script install git-extras which needs the epel repo incase you are using redhat. Following are the steps to add the epel repo.
+ - rpm --import http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7
+ - yum-config-manager --add-repo https://dl.fedoraproject.org/pub/epel/7/ppc64le/
 
 ### Overview ###
 
 The code is for easing the steps for installing spark bench. Currently this installs the spark bench from branch 2.0.1 of repo at https://github.com/MaheshIBM/spark-bench 
 
 ### How to run the script ###
-Clone the repo and run ./install.sh at Spark-Benchmarks-Setup/spark-bench-setup. The code is tested to run on ubuntu 16.04.1 LTS.
+Clone the repo and run ./install.sh at Spark-Benchmarks-Setup/spark-bench-setup. The code is tested to run on ubuntu 16.04.1 LTS and Red Hat Enterprise Linux Server release 7.2 (Maipo).
 After installation to run a workload use run_bench.sh for example to run Terasort the command is *./run_bench.sh -cr Terasort*
 Use -c flag to create data, -r to only run and -cr if you want to create and run.
 
@@ -80,3 +82,4 @@ To execute the workload for SQL, generate data followed by run. The configuratio
  - SVM
  - Terasort
  - TriangleCount
+
