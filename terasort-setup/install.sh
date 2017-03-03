@@ -102,7 +102,7 @@ echo "---------------------------------------------" | tee -a $log
 
 if [ -d ${TERASORT_WORK_DIR}/spark-terasort ];
 then
-    echo -e 'Removing existing HiBench folder - '${TERASORT_WORK_DIR}'/spark-terasort \n' | tee -a $log
+    echo -e 'Removing existing Terasort folder - '${TERASORT_WORK_DIR}'/spark-terasort \n' | tee -a $log
 	rm -rf ${TERASORT_WORK_DIR}/spark-terasort &>/dev/null
 fi
 	
@@ -120,9 +120,7 @@ fi
 	
 echo "---------------------------------------------" | tee -a $log
 
-##Hadoop config updates
-	
-	
+
 cd ${TERASORT_WORK_DIR}/spark-terasort
 
 echo -e "Building terasort"
