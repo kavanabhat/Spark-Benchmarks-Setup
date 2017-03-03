@@ -60,67 +60,75 @@ for i in `echo ${workload} | tr "," " "`
 do 
 	if [ ${i} = "graph" ]
 	then 
-
-		echo -e 'Runninng graph workload'  | tee -a $log
+          
+		echo -e '\nRunninng graph-nweight workload \n'  | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/graph/nweight/prepare/prepare.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/graph/nweight/spark/run.sh | tee -a $log
 		
 	elif [ ${i} = "micro" ]
 	then
-		echo -e 'Runninng micro workload'  | tee -a $log
+		echo -e '\nRunninng micro-wordcount workload \n'  | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/wordcount/prepare/prepare.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/wordcount/spark/run.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/wordcount/hadoop/run.sh | tee -a $log
-
+        
+		echo -e '\nRunninng micro-terasort workload \n'  | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/terasort/prepare/prepare.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/terasort/spark/run.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/terasort/hadoop/run.sh | tee -a $log
-
+        
+		echo -e '\nRunninng micro-sort workload \n'  | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/sort/prepare/prepare.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/sort/spark/run.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/sort/hadoop/run.sh | tee -a $log
-
+        
+		echo -e '\nRunninng micro-sleep workload \n'  | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/sleep/prepare/prepare.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/sleep/spark/run.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/sleep/hadoop/run.sh | tee -a $log
-
+        
+		echo -e '\nRunninng micro-dfsioe workload \n'  | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/dfsioe/prepare/prepare.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/micro/dfsioe/hadoop/run.sh | tee -a $log
 
 	elif [ ${i} = "ml" ]
 	then
-		echo -e 'Runninng ml workload'  | tee -a $log
+		echo -e '\nRunninng ml-bayes workload \n'  | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/ml/bayes/prepare/prepare.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/ml/bayes/spark/run.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/ml/bayes/hadoop/run.sh | tee -a $log
-
+        
+		echo -e '\nRunninng ml-kmeans workload \n'  | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/ml/kmeans/prepare/prepare.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/ml/kmeans/spark/run.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/ml/kmeans/hadoop/run.sh | tee -a $log
 
 	elif [ ${i} = "websearch" ]
 	then
-		echo -e 'Runninng websearch workload'  | tee -a $log
+		echo -e '\nRunninng websearch-pagerank workload \n'  | tee -a $log
 		
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/websearch/pagerank/prepare/prepare.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/websearch/pagerank/hadoop/run.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/websearch/pagerank/spark/run.sh | tee -a $log
 		
+		echo -e '\nRunninng websearch-nutchindexing workload \n'  | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/websearch/nutchindexing/prepare/prepare.sh | tee -a $log
 		${HIBENCH_WORK_DIR}/HiBench/bin/workloads/websearch/nutchindexing/hadoop/run.sh | tee -a $log
 
 	elif [ ${i} = "sql" ]
 	then
 	 
-		echo -e 'Runninng sql workload'  | tee -a $log
+		echo -e '\nRunninng sql-aggregation workload \n'  | tee -a $log
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/aggregation/prepare/prepare.sh | tee -a $log
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/aggregation/spark/run.sh | tee -a $log
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/aggregation/hadoop/run.sh | tee -a $log
-		 
+		
+         echo -e '\nRunninng sql-join workload \n'  | tee -a $log		
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/join/prepare/prepare.sh | tee -a $log
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/join/spark/run.sh | tee -a $log
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/join/hadoop/run.sh | tee -a $log
 		 
+		 echo -e '\nRunninng sql-scan workload \n'  | tee -a $log		
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/scan/prepare/prepare.sh | tee -a $log
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/scan/spark/run.sh | tee -a $log
 		 ${HIBENCH_WORK_DIR}/HiBench/bin/workloads/sql/scan/hadoop/run.sh | tee -a $log

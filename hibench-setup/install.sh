@@ -36,27 +36,82 @@ HIBENCH_GIT_URL='https://github.com/intel-hadoop/HiBench.git'
 echo -e 'HIBENCH GIT_URL='$HIBENCH_GIT_URL'' | tee -a $log
 
 echo "---------------------------------------------" | tee -a $log
-#check for zip installed or not
-if [ ! -x /usr/bin/zip ] 
+
+##Checking if wget and curl installed or not, and getting installed if not for ubuntu and redhat both
+python -mplatform  |grep -i redhat >/dev/null 2>&1
+# Ubuntu
+if [ $? -ne 0 ]
 then
-   echo "zip is not installed on Master, so getting installed" | tee -a $log
-   sudo apt-get install zip | tee -a $log
+	#check for zip installed or not
+	if [ ! -x /usr/bin/zip ] 
+	then
+	   echo "zip is not installed on Master, so getting installed" | tee -a $log
+	   sudo apt-get install zip >> $log
+	fi
+
+	#check for maven installed or not
+	mvn -version &>> /dev/null
+	if [ $? -ne 0 ]
+	then
+	   echo "maven is not installed on Master, so getting installed" | tee -a $log
+	   sudo apt-get install maven &>> $log
+	fi
+
+	if [ ! -x /usr/bin/python ] 
+	then
+	   echo "Python is not installed on Master, so installing Python" | tee -a $log
+	   sudo apt-get install python &>> $log  
+	fi
+else
+	#check for zip installed or not
+	if [ ! -x /usr/bin/zip ] 
+	then
+	   echo "zip is not installed on Master, so getting installed" | tee -a $log
+	   sudo yum install zip &>> $log
+	fi
+
+	#check for maven installed or not
+    
+	mvn_install=0
+	mvn -version &>> /dev/null
+	if [ $? -ne 0 ]
+	then
+	    mvn_install=1
+	    echo "maven is not installed on Master, so getting installed" | tee -a $log
+		cd ${HOME}
+		if [ ! -f apache-maven-3.3.9-bin.tar.gz ]
+		then
+			wget http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+		fi
+
+		if [ ! -d apache-maven-3.3.9 ]
+		then
+			rm -rf apache-maven-3.3.9 &>> $log
+			tar xzf apache-maven-3.3.9-bin.tar.gz &>> $log
+		fi
+
+		echo "#StartMAVEN variables" >> tmp_b
+		echo "export M2_HOME=~/apache-maven-3.3.9" >> tmp_b
+		echo 'export PATH=${M2_HOME}/bin:${PATH}' >> tmp_b
+		echo "#EndMAVEN variables" >> tmp_b
+		sed -i '/#StartMAVEN/,/#EndMAVEN/d' $HOME/.bashrc
+		cat tmp_b >> ~/.bashrc
+		rm tmp_b
+		source ~/.bashrc
+		mvn -version &>>/dev/null
+		if [ $? != 0 ]
+		then
+			echo "Maven installation is failed" | tee -a $log
+			exit 1
+		fi
+	fi
+	
+	if [ ! -x /usr/bin/python ] 
+	then
+	   echo "Python is not installed on Master, so installing Python" | tee -a $log
+	   sudo yum install python &>> $log  
+	fi
 fi
-
-#check for maven installed or not
-
-if [ ! -x /usr/bin/mvn ] 
-then
-   echo "maven is not installed on Master, so getting installed" | tee -a $log
-   sudo apt-get install maven | tee -a $log
-fi
-
-if [ ! -x /usr/bin/python ] 
-then
-   echo "Python is not installed on Master, so installing Python" | tee -a $log
-   sudo apt-get install python >> $log  
-fi
-
 
 #Logic to create server list 
 echo  $SLAVES | grep -v "^#" | tr "," "\n" | grep "$MASTER" &>>/dev/null
@@ -135,12 +190,20 @@ sed -i 's|^hibench.hdfs.master.*|hibench.hdfs.master       hdfs://'${MASTER}':90
 cp ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf.template ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
 
 sed -i 's|^hibench.spark.home.*|hibench.spark.home    '${SPARK_HOME}'|g' ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
+
+echo -e >> ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
+echo "#spark classpath for mysql jar locations">> ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
+echo "spark.executor.extraClassPath /usr/share/java/mysql-connector-java.jar" >> ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
+echo "spark.driver.extraClassPath /usr/share/java/mysql-connector-java.jar" >> ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
 	
 cd ${HIBENCH_WORK_DIR}/HiBench
 
-echo -e "Building HiBench"
+echo -e "Building HiBench" | tee -a $log
 
 ${HIBENCH_WORK_DIR}/HiBench/bin/build-all.sh | tee -a $log
 echo -e
-echo -e 'Please edit memory and executor related parameter as per your requirement in '${HIBENCH_WORK_DIR}'/HiBench/conf/spark.conf file'
-echo -e
+echo -e 'Please edit memory and executor related parameters like "hibench.yarn.executor.num","hibench.yarn.executor.cores","spark.executor.memory","spark.driver.memory" as per your requirement in '${HIBENCH_WORK_DIR}'/HiBench/conf/spark.conf file \n'
+if [ $mvn_install -ne 0 ]
+then
+	echo -e 'Please execute "source ~/.bashrc" to export updated maven related environment variables in your current login session. \n'
+fi
