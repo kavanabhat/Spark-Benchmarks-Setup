@@ -4,7 +4,8 @@
 1. Zip is installed on master machine 
 2. Maven and Python is installed on master machine
 3. Hadoop and spark setup is already completed using scripts at https://github.com/kmadhugit/hadoop-cluster-utils.git  and it is running on master & slave machines.
-4. Hive and mysql setup completed using script mentioned in above point. 
+4. Also Hive and mysql setup is completed using script mentioned in above point 3. 
+5. Set shell environment variable `WORKDIR` to path where you want to clone/install git repository of hibench-setup (e.g. export WORKDIR=/home/testuser)
 
 
 ### Installations:
