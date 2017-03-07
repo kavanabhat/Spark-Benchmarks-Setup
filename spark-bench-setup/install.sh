@@ -78,14 +78,14 @@ git-ignore $WORK_DIR
 cd $WORK_DIR
 echo "Cloning necessary dependencies to $WORK_DIR"
 
-git clone https://github.com/synhershko/wikixmlj.git | tee -a $log
+git_from_zip https://github.com/synhershko/wikixmlj master wikixmlj | tee -a $log
 cd wikixmlj
 echo "Building wikixmlj, logs redirected to $log" | tee -a $log
 mvn package install >> $log
 
 
 cd ..
-git clone https://github.com/MaheshIBM/spark-bench -b spark2.0.1 | tee -a $log
+git_from_zip  https://github.com/MaheshIBM/spark-bench spark2.0.1 spark-bench | tee -a $log
 
 
 cd spark-bench
