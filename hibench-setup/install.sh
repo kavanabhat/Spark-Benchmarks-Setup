@@ -43,6 +43,7 @@ python -mplatform  |grep -i redhat >/dev/null 2>&1
 if [ $? -ne 0 ]
 then
 	#check for zip installed or not
+        is_redhat=0
 	if [ ! -x /usr/bin/zip ] 
 	then
 	   echo "zip is not installed on Master, so getting installed" | tee -a $log
@@ -64,6 +65,7 @@ then
 	fi
 else
 	#check for zip installed or not
+        is_redhat=1
 	if [ ! -x /usr/bin/zip ] 
 	then
 	   echo "zip is not installed on Master, so getting installed" | tee -a $log
@@ -167,7 +169,7 @@ fi
 	
 if curl --output /dev/null --silent --head --fail ${HIBENCH_GIT_URL}
 then
-    git clone --recursive ${HIBENCH_GIT_URL} | tee -a $log
+    git clone --depth 1 --recursive ${HIBENCH_GIT_URL} | tee -a $log
 	echo -e 
 	echo -e 'HiBench cloning done at - '${HIBENCH_WORK_DIR}'/HiBench' | tee -a $log
 				 
@@ -198,12 +200,12 @@ echo "spark.driver.extraClassPath /usr/share/java/mysql-connector-java.jar" >> $
 	
 cd ${HIBENCH_WORK_DIR}/HiBench
 
-echo -e "Building HiBench" | tee -a $log
+echo -e "Building HiBench redirecting logs to $log" | tee -a $log
 
-${HIBENCH_WORK_DIR}/HiBench/bin/build-all.sh | tee -a $log
+${HIBENCH_WORK_DIR}/HiBench/bin/build-all.sh >> $log
 echo -e
 echo -e 'Please edit memory and executor related parameters like "hibench.yarn.executor.num","hibench.yarn.executor.cores","spark.executor.memory","spark.driver.memory" as per your requirement in '${HIBENCH_WORK_DIR}'/HiBench/conf/spark.conf file \n'
-if [ $mvn_install -ne 0 ]
+if [ $is_redhat = 1 ] && [ $mvn_install -ne 0 ]
 then
 	echo -e 'Please execute "source ~/.bashrc" to export updated maven related environment variables in your current login session. \n'
 fi
