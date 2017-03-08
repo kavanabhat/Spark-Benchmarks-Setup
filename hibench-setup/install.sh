@@ -192,7 +192,7 @@ sed -i 's|^hibench.hdfs.master.*|hibench.hdfs.master       hdfs://'${MASTER}':90
 cp ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf.template ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
 
 sed -i 's|^hibench.spark.home.*|hibench.spark.home    '${SPARK_HOME}'|g' ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
-
+sed -i 's|^hibench.spark.master.*|^hibench.spark.master    yarn |g' ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
 echo -e >> ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
 echo "#spark classpath for mysql jar locations">> ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
 echo "spark.executor.extraClassPath /usr/share/java/mysql-connector-java.jar" >> ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
