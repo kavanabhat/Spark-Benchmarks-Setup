@@ -1,5 +1,26 @@
 #!/bin/bash
 
+#Function to download and unzip repo contents
+#usage git_from_zip log_location url branch dest_path
+#for example git_from_zip test.log https://github.com/nkalband/Spark-Benchmarks-Setup hibench nkalband => download and unzip hibench branch to nkalband folder
+# git_from_zip 1.log https://github.com/MaheshIBM/Spark-Benchmarks-Setup master . => download and unzip master branch to . folder
+function git_from_zip(){
+  url=$1
+  branch=$2
+  dest_path=$3
+  if [ -f temp.zip ] ; then
+    rm temp.zip
+  fi
+  
+  curl -L "$url/archive/${branch}.zip" > temp.zip 
+  mkdir -p ${dest_path} 
+  unzip temp.zip -d ${dest_path} 
+  #the zip file compresses folder as reponame-branch so need the below statements
+  repo_name=$(echo $url | awk -F "/" '{print  $5}')
+  cp -R ${dest_path}/${repo_name}-${branch}/* ${dest_path}
+
+} 
+
 #Method to install maven on redhat
 #maven is not available as a package so 
 #need to extract and install
