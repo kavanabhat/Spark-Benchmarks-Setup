@@ -35,7 +35,7 @@ ${SPARK_HOME}/bin/spark-submit --class com.github.ehiggs.spark.terasort.TeraGen 
 echo -e | tee -a $log
 echo "Sorting Data" | tee -a $log
 
-${SPARK_HOME}/bin/spark-submit --conf 'spark.executor.extraJavaOptions=-Dos.arch=ppc64le' --master yarn-client --class com.github.ehiggs.spark.terasort.TeraSort ${TERASORT_WORK_DIR}/spark-terasort/target/spark-terasort-1.0-jar-with-dependencies.jar hdfs://${MASTER}:9000/data/terasort_in hdfs://${MASTER}:9000/data/terasort_out | tee -a $log
+${SPARK_HOME}/bin/spark-submit --conf 'spark.executor.extraJavaOptions=-Dos.arch=ppc64le' --master yarn --class com.github.ehiggs.spark.terasort.TeraSort ${TERASORT_WORK_DIR}/spark-terasort/target/spark-terasort-1.0-jar-with-dependencies.jar hdfs://${MASTER}:9000/data/terasort_in hdfs://${MASTER}:9000/data/terasort_out | tee -a $log
 
 echo "---------------------------------------------" | tee -a $log
 
@@ -47,7 +47,7 @@ for slave in `echo $SLAVES |cut -d "=" -f2 | tr "," "\n" | cut -d "," -f1`
 do
 echo -e '\nValidating Data on '$slave'' | tee -a $log
 
-${SPARK_HOME}/bin/spark-submit --conf 'spark.executor.extraJavaOptions=-Dos.arch=ppc64le' --master yarn-client --class com.github.ehiggs.spark.terasort.TeraValidate ${TERASORT_WORK_DIR}/spark-terasort/target/spark-terasort-1.0-jar-with-dependencies.jar hdfs://${MASTER}:9000/data/terasort_out hdfs://${slave}:9000/data/terasort_validate | tee -a ${TERASORT_UTILS_DIR}/wdir/spark-terasort/output/Validate_result_${slave}
+${SPARK_HOME}/bin/spark-submit --conf 'spark.executor.extraJavaOptions=-Dos.arch=ppc64le' --master yarn --class com.github.ehiggs.spark.terasort.TeraValidate ${TERASORT_WORK_DIR}/spark-terasort/target/spark-terasort-1.0-jar-with-dependencies.jar hdfs://${MASTER}:9000/data/terasort_out hdfs://${slave}:9000/data/terasort_validate | tee -a ${TERASORT_UTILS_DIR}/wdir/spark-terasort/output/Validate_result_${slave}
 
 done
 
