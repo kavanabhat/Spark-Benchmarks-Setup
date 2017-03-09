@@ -36,21 +36,77 @@ TERASORT_GIT_URL='https://github.com/ehiggs/spark-terasort.git'
 echo -e 'TERASORT_GIT_URL='$TERASORT_GIT_URL'' | tee -a $log
 
 echo "---------------------------------------------" | tee -a $log
-#check for zip installed or not
-if [ ! -x /usr/bin/zip ] 
+# Ubuntu
+if [ $? -ne 0 ]
 then
-   echo "zip is not installed on Master, so getting installed" | tee -a $log
-   sudo apt-get install zip | tee -a $log
+	#check for zip installed or not
+	if [ ! -x /usr/bin/zip ] 
+	then
+	   echo "zip is not installed on Master, so getting installed" | tee -a $log
+	   sudo apt-get install -y zip >> $log
+	fi
+
+	#check for maven installed or not
+	mvn -version &>> /dev/null
+	if [ $? -ne 0 ]
+	then
+	   echo "maven is not installed on Master, so getting installed" | tee -a $log
+	   sudo apt-get install -y maven &>> $log
+	fi
+
+	if [ ! -x /usr/bin/python ] 
+	then
+	   echo "Python is not installed on Master, so installing Python" | tee -a $log
+	   sudo apt-get install -y python &>> $log  
+	fi
+else
+	#check for zip installed or not
+	if [ ! -x /usr/bin/zip ] 
+	then
+	   echo "zip is not installed on Master, so getting installed" | tee -a $log
+	   sudo yum -y install zip &>> $log
+	fi
+
+	#check for maven installed or not
+    
+	mvn -version &>> /dev/null
+	if [ $? -ne 0 ]
+	then
+	    echo "maven is not installed on Master, so getting installed" | tee -a $log
+		cd ${HOME}
+		if [ ! -f apache-maven-3.3.9-bin.tar.gz ]
+		then
+			wget http://www-eu.apache.org/dist/maven/maven-3/3.3.9/binaries/apache-maven-3.3.9-bin.tar.gz
+		fi
+
+		if [ ! -d apache-maven-3.3.9 ]
+		then
+			rm -rf apache-maven-3.3.9 &>> $log
+			tar xzf apache-maven-3.3.9-bin.tar.gz &>> $log
+		fi
+
+		echo "#StartMAVEN variables" >> tmp_b
+		echo "export M2_HOME=~/apache-maven-3.3.9" >> tmp_b
+		echo 'export PATH=${M2_HOME}/bin:${PATH}' >> tmp_b
+		echo "#EndMAVEN variables" >> tmp_b
+		sed -i '/#StartMAVEN/,/#EndMAVEN/d' $HOME/.bashrc
+		cat tmp_b >> ~/.bashrc
+		rm tmp_b
+		source ~/.bashrc
+		mvn -version &>>/dev/null
+		if [ $? != 0 ]
+		then
+			echo "Maven installation is failed" | tee -a $log
+			exit 1
+		fi
+	fi
+	
+	if [ ! -x /usr/bin/python ] 
+	then
+	   echo "Python is not installed on Master, so installing Python" | tee -a $log
+	   sudo yum -y install python &>> $log  
+	fi
 fi
-
-#check for maven installed or not
-
-if [ ! -x /usr/bin/mvn ] 
-then
-   echo "maven is not installed on Master, so getting installed" | tee -a $log
-   sudo apt-get install maven | tee -a $log
-fi
-
 
 
 
@@ -123,8 +179,15 @@ echo "---------------------------------------------" | tee -a $log
 
 cd ${TERASORT_WORK_DIR}/spark-terasort
 
-echo -e "Building terasort"
+echo -e "Building terasort, redirecting maven output to $log"
 
-mvn install  | tee -a $log
+mvn install  >>  $log
+if [ $? != 0 ]
+then
+    echo "Build failed check logs at $log"
+    exit 1
+fi
+
+echo "Build and installation log at $log"
 echo -e
 echo -e
