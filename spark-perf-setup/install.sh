@@ -27,13 +27,13 @@ echo -e | tee -a $log
 #check for zip installed or not
 if [ ! -x /usr/bin/zip ] ; then
    echo "zip is not installed on Master, so getting installed" | tee -a $log
-   sudo apt-get install zip >> $log
+   sudo apt-get install -y  zip >> $log
 fi
 
 if [ ! -x /usr/bin/python ] 
 then
    echo "Python is not installed on Master, so installing Python" | tee -a $log
-   sudo apt-get install python >> $log  
+   sudo apt-get install -y python >> $log  
 fi
 
 

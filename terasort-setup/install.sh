@@ -1,26 +1,26 @@
 #!/bin/bash -l
-echo -e
+
 if [ -z ${WORKDIR} ]; then
-   echo "Please set your work directory environment variable - "WORKDIR"." | tee -a $log
+   echo "Please set your work directory environment variable - "WORKDIR"."
    exit 1
 fi
 
-HIBENCH_UTILS_DIR=$WORKDIR/Spark-Benchmarks-Setup/hibench-setup  
+TERASORT_UTILS_DIR=$WORKDIR/Spark-Benchmarks-Setup/terasort-setup  
 current_time=$(date +"%Y.%m.%d.%S")
 
-if [ ! -d ${HIBENCH_UTILS_DIR}/wdir ];
+if [ ! -d ${TERASORT_UTILS_DIR}/wdir ];
 then
-    mkdir ${HIBENCH_UTILS_DIR}/wdir
+    mkdir ${TERASORT_UTILS_DIR}/wdir
 fi
 
-HIBENCH_WORK_DIR=$WORKDIR/Spark-Benchmarks-Setup/hibench-setup/wdir
+TERASORT_WORK_DIR=$WORKDIR/Spark-Benchmarks-Setup/terasort-setup/wdir
 
-if [ ! -d ${HIBENCH_WORK_DIR}/hibench_logs ];
+if [ ! -d ${TERASORT_WORK_DIR}/terasort_logs ];
 then
-    mkdir ${HIBENCH_WORK_DIR}/hibench_logs
+    mkdir ${TERASORT_WORK_DIR}/terasort_logs
 fi
 
-log=${HIBENCH_WORK_DIR}/hibench_logs/hibench_install_$current_time.log
+log=${TERASORT_WORK_DIR}/terasort_logs/terasort_install_$current_time.log
 
 echo -e 'Node server details for existing hadoop and spark setup' | tee -a $log
 MASTER=`hostname`
@@ -32,18 +32,14 @@ echo "---------------------------------------------" | tee -a $log
 
 
 #Hibench git repository url
-HIBENCH_GIT_URL='https://github.com/intel-hadoop/HiBench.git'
-echo -e 'HIBENCH GIT_URL='$HIBENCH_GIT_URL'' | tee -a $log
+TERASORT_GIT_URL='https://github.com/ehiggs/spark-terasort.git'
+echo -e 'TERASORT_GIT_URL='$TERASORT_GIT_URL'' | tee -a $log
 
 echo "---------------------------------------------" | tee -a $log
-
-##Checking if wget and curl installed or not, and getting installed if not for ubuntu and redhat both
-python -mplatform  |grep -i redhat >/dev/null 2>&1
 # Ubuntu
 if [ $? -ne 0 ]
 then
 	#check for zip installed or not
-        is_redhat=0
 	if [ ! -x /usr/bin/zip ] 
 	then
 	   echo "zip is not installed on Master, so getting installed" | tee -a $log
@@ -55,7 +51,7 @@ then
 	if [ $? -ne 0 ]
 	then
 	   echo "maven is not installed on Master, so getting installed" | tee -a $log
-	   sudo apt-get install -y  maven &>> $log
+	   sudo apt-get install -y maven &>> $log
 	fi
 
 	if [ ! -x /usr/bin/python ] 
@@ -65,7 +61,6 @@ then
 	fi
 else
 	#check for zip installed or not
-        is_redhat=1
 	if [ ! -x /usr/bin/zip ] 
 	then
 	   echo "zip is not installed on Master, so getting installed" | tee -a $log
@@ -74,11 +69,9 @@ else
 
 	#check for maven installed or not
     
-	mvn_install=0
 	mvn -version &>> /dev/null
 	if [ $? -ne 0 ]
 	then
-	    mvn_install=1
 	    echo "maven is not installed on Master, so getting installed" | tee -a $log
 		cd ${HOME}
 		if [ ! -f apache-maven-3.3.9-bin.tar.gz ]
@@ -115,6 +108,8 @@ else
 	fi
 fi
 
+
+
 #Logic to create server list 
 echo  $SLAVES | grep -v "^#" | tr "," "\n" | grep "$MASTER" &>>/dev/null
 if [ $? -eq 0 ]
@@ -126,7 +121,7 @@ else
 fi
 
 
-cd ${HIBENCH_WORK_DIR}
+cd ${TERASORT_WORK_DIR}
 	
 ##hadoop check
 for i in `echo $SERVERS |cut -d "=" -f2 | tr "," "\n" | cut -d "," -f1`
@@ -159,53 +154,40 @@ done
 echo "---------------------------------------------" | tee -a $log
 
 	
-##HiBench setup steps
+##Terasort setup steps
 
-if [ -d ${HIBENCH_WORK_DIR}/HiBench ];
+if [ -d ${TERASORT_WORK_DIR}/spark-terasort ];
 then
-    echo -e 'Removing existing HiBench folder - '${HIBENCH_WORK_DIR}'/HiBench \n' | tee -a $log
-	rm -rf ${HIBENCH_WORK_DIR}/HiBench &>/dev/null
+    echo -e 'Removing existing Terasort folder - '${TERASORT_WORK_DIR}'/spark-terasort \n' | tee -a $log
+	rm -rf ${TERASORT_WORK_DIR}/spark-terasort &>/dev/null
 fi
 	
-if curl --output /dev/null --silent --head --fail ${HIBENCH_GIT_URL}
+if curl --output /dev/null --silent --head --fail ${TERASORT_GIT_URL}
 then
-    git clone --depth 1 --recursive ${HIBENCH_GIT_URL} | tee -a $log
+    git clone ${TERASORT_GIT_URL} | tee -a $log
 	echo -e 
-	echo -e 'HiBench cloning done at - '${HIBENCH_WORK_DIR}'/HiBench' | tee -a $log
+	echo -e 'Terasort cloning done at - '${TERASORT_WORK_DIR}'/spark-terasort' | tee -a $log
 				 
 else
     echo -e
-    echo 'This URL - '${HIBENCH_GIT_URL}' does not exist. Please check url for HiBench git repository.' | tee -a $log
+    echo 'This URL - '${TERASORT_GIT_URL}' does not exist. Please check url for Terasort git repository.' | tee -a $log
 	exit 1
 fi 
 	
 echo "---------------------------------------------" | tee -a $log
 
-##Hadoop config updates
-	
-cp ${HIBENCH_WORK_DIR}/HiBench/conf/hadoop.conf.template ${HIBENCH_WORK_DIR}/HiBench/conf/hadoop.conf
 
-sed -i 's|^hibench.hadoop.home.*|hibench.hadoop.home    '${HADOOP_HOME}'|g' ${HIBENCH_WORK_DIR}/HiBench/conf/hadoop.conf
-sed -i 's|^hibench.hdfs.master.*|hibench.hdfs.master       hdfs://'${MASTER}':9000 |g' ${HIBENCH_WORK_DIR}/HiBench/conf/hadoop.conf
+cd ${TERASORT_WORK_DIR}/spark-terasort
 
-##spark config updates
-cp ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf.template ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
+echo -e "Building terasort, redirecting maven output to $log"
 
-sed -i 's|^hibench.spark.home.*|hibench.spark.home    '${SPARK_HOME}'|g' ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
-sed -i 's|^hibench.spark.master.*|hibench.spark.master    yarn |g' ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
-echo -e >> ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
-echo "#spark classpath for mysql jar locations">> ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
-echo "spark.executor.extraClassPath /usr/share/java/mysql-connector-java.jar" >> ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
-echo "spark.driver.extraClassPath /usr/share/java/mysql-connector-java.jar" >> ${HIBENCH_WORK_DIR}/HiBench/conf/spark.conf
-	
-cd ${HIBENCH_WORK_DIR}/HiBench
-
-echo -e "Building HiBench redirecting logs to $log" | tee -a $log
-
-${HIBENCH_WORK_DIR}/HiBench/bin/build-all.sh >> $log
-echo -e
-echo -e 'Please edit memory and executor related parameters like "hibench.yarn.executor.num","hibench.yarn.executor.cores","spark.executor.memory","spark.driver.memory" as per your requirement in '${HIBENCH_WORK_DIR}'/HiBench/conf/spark.conf file \n'
-if [ $is_redhat = 1 ] && [ $mvn_install -ne 0 ]
+mvn install  >>  $log
+if [ $? != 0 ]
 then
-	echo -e 'Please execute "source ~/.bashrc" to export updated maven related environment variables in your current login session. \n'
+    echo "Build failed check logs at $log"
+    exit 1
 fi
+
+echo "Build and installation log at $log"
+echo -e
+echo -e
