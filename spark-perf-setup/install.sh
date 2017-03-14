@@ -24,18 +24,35 @@ log=${PERFWORK_DIR}/spark_perf_logs/spark_perf_install_$current_time.log
 
 echo -e | tee -a $log
 
-#check for zip installed or not
-if [ ! -x /usr/bin/zip ] ; then
-   echo "zip is not installed on Master, so getting installed" | tee -a $log
-   sudo apt-get install -y  zip >> $log
-fi
-
-if [ ! -x /usr/bin/python ] 
+python -mplatform  |grep -i redhat >/dev/null 2>&1
+# Ubuntu
+if [ $? -ne 0 ]
 then
-   echo "Python is not installed on Master, so installing Python" | tee -a $log
-   sudo apt-get install -y python >> $log  
-fi
+	#check for zip installed or not
+    if [ ! -x /usr/bin/zip ] ; then
+		echo "zip is not installed on Master, so getting installed" | tee -a $log
+		sudo apt-get install -y zip &>> $log
+	fi
 
+	if [ ! -x /usr/bin/python ] 
+	then
+		echo "Python is not installed on Master, so installing Python" | tee -a $log
+		sudo apt-get install -y python &>> $log  
+	fi
+else
+#redhat
+	if [ ! -x /usr/bin/zip ] 
+	then
+	   echo "zip is not installed on Master, so getting installed" | tee -a $log
+	   sudo yum -y install zip &>> $log
+	fi
+	
+	if [ ! -x /usr/bin/python ] 
+	then
+	   echo "Python is not installed on Master, so installing Python" | tee -a $log
+	   sudo yum -y install python &>> $log  
+	fi
+fi
 
 echo -e 'Node server details for existing hadoop and spark setup' 
 MASTER=`hostname`
