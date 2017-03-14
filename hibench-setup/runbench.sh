@@ -150,4 +150,4 @@ zip -r ${HIBENCH_WORK_DIR}/hibench_results/hibench_output_$current_time.zip ./* 
 echo 'You can check results at location '${HIBENCH_WORK_DIR}'/hibench_results and logs at location '${HIBENCH_WORK_DIR}'/hibench_logs' | tee -a $log
 echo "Report file at ${HIBENCH_WORK_DIR}/hibench_results/hibench.report_${current_time}" | tee -a $log
 echo "Log file at ${HIBENCH_WORK_DIR}/hibench_logs/${last_file}" | tee -a $log
-echo "Zipped file at ${HIBENCH_WORK_DIR}/hibench_results/hibench_output_$current_time.zip" | tee - a log
+echo "Zipped file at ${HIBENCH_WORK_DIR}/hibench_results/hibench_output_$current_time.zip" | tee -a $log
