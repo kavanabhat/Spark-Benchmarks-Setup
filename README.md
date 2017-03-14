@@ -24,7 +24,7 @@ Below are steps followed for specific benchmark setup and run
   cd Spark-Benchmarks-Setup/spark-perf-setup
   ```
     
-* Configuration
+### How to run the script ###
    1. To configure `spark-perf`, run `./install.sh`, it will clone the spark-perf repository under path `Spark-Benchmarks-Setup/spark-perf-setup/` and also will set the hadoop and spark related variables in config.py file for spak-perf.
    2. To run benchmark , run `./runbench.sh`. It will ask for options to select type of test to be run and scale factor if you want to change. Once all inputs received it will execute selected benchmarks.
    3. Output files for benchmarks will be stored in zip format at location `Spark-Benchmarks-Setup/spark-perf-setup/wdir/spark-perf-results` and logs at `Spark-Benchmarks-Setup/spark-perf-setup/wdir/spark-perf-logs`
@@ -68,7 +68,7 @@ Use -c flag to create data, -r to only run and -cr if you want to create and run
   cd Spark-Benchmarks-Setup/hibench-setup
   ```
     
-###  Configuration
+### How to run the script ###
 
    1. To configure `HiBench`, run `./install.sh`, it will clone the HiBench repository under path `Spark-Benchmarks-Setup/hibench-setup/wdir` and also will set the hadoop and spark related variables in configuration files for HiBench. At the end, it will run build for HiBench.
    2. If `./install.sh` is installing maven on redhat machine, please execute "source ~/.bashrc to export updated maven related environment variables in your current login session.
@@ -86,14 +86,13 @@ Use -c flag to create data, -r to only run and -cr if you want to create and run
 
 ### How to install:
 
-
   ```bash
   git clone https://github.com/kavanabhat/Spark-Benchmarks-Setup.git
   
   cd Spark-Benchmarks-Setup/terasort-setup
  
   ```
-    
+ ### How to run the script ###  
    1. To clone and build the `Terasort` code, run `./install.sh`, it will clone the Terasort repository under path `Spark-Benchmarks-Setup/terasort-setup/wdir` and also will set the hadoop and spark related variables in configuration files for Terasort. At the end, it will run build command for Terasort.
    2. To run terasort , run `./runbench.sh`. Depending on the options selected, it will first generate the data to HDFS file (data/terasort_in)and then sort the data into HDFS (data/terasort_out), after that the data is validated and the validation output is stored in hdfs at (data/terasort_validate)
    3. Output files for sorting/validation/data generation will be stored in zip format at location `Spark-Benchmarks-Setup/terasort-setup/wdir/terasort_results`
