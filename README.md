@@ -5,9 +5,9 @@ This repository contains shell scripts to setup and execute below spark benchmar
 3. Hibench
 4. Terasort
 
-Below are steps followed for specific benchmark setup and run 
+Below are detailed steps to be followed to setup each benchmark and run same. 
 
-# Spark-perf setup
+# Spark-perf
 
 ### Pre-requisites:
 1. Zip is installed on master machine 
@@ -29,7 +29,7 @@ Below are steps followed for specific benchmark setup and run
    2. To run benchmark , run `./runbench.sh`. It will ask for options to select type of test to be run and scale factor if you want to change. Once all inputs received it will execute selected benchmarks.
    3. Output files for benchmarks will be stored in zip format at location `Spark-Benchmarks-Setup/spark-perf-setup/wdir/spark-perf-results` and logs at `Spark-Benchmarks-Setup/spark-perf-setup/wdir/spark-perf-logs`
 
-# Spark-bench setup
+# Spark-bench
 
 ### Pre-requisites:
 1. Zip is installed on master machine 
@@ -48,7 +48,7 @@ Clone the repo and run ./install.sh at Spark-Benchmarks-Setup/spark-bench-setup.
 After installation to run a workload use run_bench.sh for example to run Terasort the command is *./run_bench.sh -cr Terasort*
 Use -c flag to create data, -r to only run and -cr if you want to create and run.
 
-# HiBench setup
+# HiBench
 
 ### Pre-requisites:
 1. Zip is installed on master machine 
@@ -73,7 +73,7 @@ Use -c flag to create data, -r to only run and -cr if you want to create and run
    3. To run benchmark , run `./runbench.sh`. It will ask for options to select type of workloads to be run.Please select workload name in comma separated format for multiple inputs (e.g. sql,micro) or "all" if you want to run all workloads.
    4. Output files for benchmarks will be stored in zip format at location `Spark-Benchmarks-Setup/hibench-setup/wdir/hibench-results` and logs at `Spark-Benchmarks-Setup/hibench-setup/wdir/hibench-logs`
 
-# Terasort setup
+# Terasort
 
 ### Pre-requisites:
 1. Zip is installed on master machine 
