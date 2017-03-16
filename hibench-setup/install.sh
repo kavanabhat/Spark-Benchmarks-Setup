@@ -204,6 +204,13 @@ echo -e "Building HiBench redirecting logs to $log" | tee -a $log
 
 ${HIBENCH_WORK_DIR}/HiBench/bin/build-all.sh >> $log
 echo -e
+
+if [ -f ${HIBENCH_WORK_DIR}/HiBench/hadoopbench/mahout/target/apache-mahout-distribution-0.11.0.tar.gz ]
+then
+	cd ${HIBENCH_WORK_DIR}/HiBench/hadoopbench/mahout/target/
+	tar -xvzf ${HIBENCH_WORK_DIR}/HiBench/hadoopbench/mahout/target/apache-mahout-distribution-0.11.0.tar.gz &>>/dev/null
+	sed -i 's|level value="info"|level value="warn"|g' ${HIBENCH_WORK_DIR}/HiBench/hadoopbench/mahout/target/apache-mahout-distribution-0.11.0/conf/log4j.xml 
+fi
 echo -e 'Please edit memory and executor related parameters like "hibench.yarn.executor.num","hibench.yarn.executor.cores","spark.executor.memory","spark.driver.memory" as per your requirement in '${HIBENCH_WORK_DIR}'/HiBench/conf/spark.conf file \n'
 if [ $is_redhat = 1 ] && [ $mvn_install -ne 0 ]
 then
